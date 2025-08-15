@@ -1,4 +1,4 @@
-
+ 
 aventureiros_ref = db.reference('/aventureiros')
 
 
