@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Site Simples para Todos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header, footer {
+      background: #0044cc;
+      color: #fff;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    nav {
+      margin-top: .5rem;
+    }
+    nav a {
+      margin: 0 .5rem;
+      color: #fff;
+      background: #0066ff;
+      padding: .4rem .9rem;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    nav a:hover, nav a:focus {
+      background: #003399;
+    }
+    main {
+      padding: 2rem 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    section {
+      margin: 3rem 0; /* Mais espaço entre as seções */
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #ccc;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    button {
+      margin: .5rem;
+      padding: .6rem 1.2rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .contraste {
+      background: #000;
+      color: #fff;
+    }
+    .contraste nav a {
+      background: #ff0;
+      color: #000;
+    }
+    form {
+      margin-top: 1rem;
+    }
+    label, input {
+      display: block;
+      margin-bottom: .5rem;
+      width: 100%;
+    }
+    input {
+      padding: .5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌍 Site para Todos</h1>
+    <nav>
+      <a href="#usabilidade">Usabilidade</a>
+      <a href="#navegabilidade">Navegabilidade</a>
+      <a href="#acessibilidade">Acessibilidade</a>
+    </nav>
+    <button id="contrasteBtn">Alto Contraste</button>
+    <button id="fonteBtn">Aumentar Texto</button>
+  </header>
+
+  <main>
+    <section id="usabilidade">
+      <h2>Usabilidade</h2>
+      <p>Fácil de usar: textos claros, botões simples e feedback rápido.</p>
+    </section>
+
+    <section id="navegabilidade">
+      <h2>Navegabilidade</h2>
+      <p>Menu direto, links organizados e caminho fácil até o conteúdo.</p>
+    </section>
+
+    <section id="acessibilidade">
+      <h2>Acessibilidade</h2>
+      <p>Alto contraste, aumento de fonte e descrições para todos entenderem.</p>
+        </main>
+
+  <footer>
+    <p>© 2025 Site Simples para Todos</p>
+  </footer>
+
+  <script>
+    const contrasteBtn = document.getElementById('contrasteBtn');
+    contrasteBtn.addEventListener('click', () => {
+      document.body.classList.toggle('contraste');
+    });
+
+    const fonteBtn = document.getElementById('fonteBtn');
+    let grande = false;
+    fonteBtn.addEventListener('click', () => {
+      grande = !grande;
+      document.body.style.fontSize = grande ? '22px' : '18px';
+    });
+  </script>
+</body>
+</html>
+
+
