@@ -1,278 +1,562 @@
-<!DOCTYPE html>
+!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Aventureiros x Horda Infinita</title>
 
-  <style>
-    body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
-    h1, h2 { color: #00ffcc; margin: 0 0 8px; }
-    .wrap { display: grid; gap: 16px; }
-    table { width: 100%; border-collapse: collapse; background: #1e1e1e; }
-    th, td { border: 1px solid #444; padding: 8px; text-align: center; }
-    th { background: #333; }
-    .card { background: #1e1e1e; border: 1px solid #444; border-radius: 10px; padding: 12px; }
-    label { display: block; margin: 6px 0; }
-    input { background: #0f0f0f; color: #fff; border: 1px solid #444; border-radius: 6px; padding: 6px 8px; }
-    button { background: #00ffcc; color: #000; border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 700; }
-    button:disabled { opacity: .6; cursor: not-allowed; }
-    #log { max-height: 50vh; overflow-y: auto; font-size: 14px; line-height: 1.4; }
-    .muted { color: #bbb; font-size: 12px; }
-    .ok { color: #00ffaa; }
-    .warn { color: #ffdd66; }
-    .bad { color: #ff6a6a; }
-  </style>
+  <meta charset="utf-8" />
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    // --- CONFIG FIREBASE ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyBuQ0qPAejqIUomSKU8OCB6dOyss57uveE",
-      authDomain: "cavale-e-artificer.firebaseapp.com",
-      databaseURL: "https://cavale-e-artificer-default-rtdb.firebaseio.com",
-      projectId: "cavale-e-artificer",
-      storageBucket: "cavale-e-artificer.appspot.com",
-      messagingSenderId: "521069739483",
-      appId: "1:521069739483:web:ad9249c8a6c0436176bbfe",
-      measurementId: "G-C8Q3JNNL1P"
-    };
+  <title>Portal da Cidade — Cidade do Espantalho</title>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const aventureirosRef = ref(db, "aventureiros");
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    // --- ESTADO ---
-    let AVENTUREIROS = []; 
-    const rolarCarta = () => Math.floor(Math.random() * 10) + 1; 
 
-    const log = (html, cls="") => {
-      const el = document.createElement("div");
-      if (cls) el.className = cls;
-      el.innerHTML = html;
-      LOG.appendChild(el);
-      LOG.scrollTop = LOG.scrollHeight;
-    };
+<style>
+  :root {
+    --accent: #c56a45;
+    --glass-border: rgba(255,255,255,0.06);
+    --muted: #6c6c6c;
+    --text: #fff;
+    --cor-telhado: #c56a45;
+    --cor-telhado-escuro: #9c5336;
+    --cor-pedra: #d9c68f;
+    --cor-pedra-clara: #fff3c7;
+  }
 
-    function extrairTabelaAtaques(av) {
-      for (const [, valor] of Object.entries(av)) {
-        if (valor && typeof valor === "object") {
-          const temChavesNumericas = Object.keys(valor).some(k => /^\d+$/.test(k));
-          if (temChavesNumericas) return valor;
-        }
-      }
-      return null;
-    }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
 
-    const addResultado = (nome, dano, monstrosMortos, itensMap) => {
-      const tbody = document.getElementById("tbody-resultados");
-      const tr = document.createElement("tr");
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: var(--text);
 
-      // formatar drops em "quantidade item"
-      const itensStr = Object.entries(itensMap)
-        .map(([item, qtd]) => `${qtd} ${item}`)
-        .join(", ") || "-";
+    /* imagem de fundo ocupando 100% da tela */
+    background-image: url('imagens/cidade_do_espantalho.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 
-      tr.innerHTML = `
-        <td>${nome}</td>
-        <td>${dano}</td>
-        <td>${monstrosMortos}</td>
-        <td>${itensStr}</td>
-      `;
-      tbody.appendChild(tr);
-    };
+    min-height: 100vh;
+  }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      window.LOG = document.getElementById("log");
-      const TABELA = () => document.getElementById("tbody-aventureiros");
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1200;
+    background: rgba(12,12,12,0.08);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--glass-border);
+  }
 
-      // carregar aventureiros
-      onValue(aventureirosRef, (snapshot) => {
-        const tbody = TABELA();
-        tbody.innerHTML = "";
-        AVENTUREIROS = [];
+  header .left { display: flex; align-items: center; gap: 12px; }
+  header .nav { display: flex; gap: 20px; align-items: center; }
+  header .nav a {
+    color: #fff; text-decoration: none; font-weight: 600;
+    padding: 6px 10px; border-radius: 8px; transition: background 0.15s;
+  }
+  header .nav a:hover { background: rgba(255,255,255,0.04); }
+  header .nav a[aria-current="page"] { background: rgba(255,255,255,0.1); color: var(--accent); }
 
-        snapshot.forEach((child) => {
-          const av = child.val();
-          const ataques = extrairTabelaAtaques(av);
-          const avLocal = {
-            ...av,
-            ataques,
-            vidaMax: Number(av.vida) || 0,
-            vida: Number(av.vida) || 0
-          };
-          AVENTUREIROS.push(avLocal);
+  #btnMenu {
+    background: none; border: 0; color: #fff; font-size: 22px;
+    cursor: pointer; padding: 8px; border-radius: 8px; display: none;
+  }
 
-          let classesHTML = "";
-          if (av.classes) {
-            for (const [classe, qtd] of Object.entries(av.classes)) {
-              if (Number(qtd) > 0) classesHTML += `<div>${classe}: ${qtd}</div>`;
-            }
-          }
+  .sidebar {
+    position: fixed; top: 80px; left: 0; width: 78%; max-width: 320px; bottom: 0;
+    z-index: 1300;
+    background: linear-gradient(180deg, rgba(12,12,12,0.14), rgba(12,12,12,0.08));
+    backdrop-filter: blur(8px);
+    transform: translateX(-110%);
+    transition: transform 0.28s ease;
+    border-right: 1px solid var(--glass-border);
+    padding: 16px; overflow: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar h3 { color: #fff; margin: 6px 0 12px; font-size: 18px; }
+  .sidebar a {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px; text-decoration: none; color: #fff; border-radius: 8px;
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .sidebar a:hover { background: rgba(255,255,255,0.04); }
+  .sidebar a[aria-current="page"] { background: rgba(255,255,255,0.1); color: var(--accent); }
+  .btn-close {
+    background: none; border: none; color: #fff; font-size: 18px; cursor: pointer;
+    position: absolute; top: 16px; right: 16px;
+  }
 
-          let ataquesHTML = "";
-          if (ataques) {
-            for (let i = 1; i <= 10; i++) {
-              ataquesHTML += `<div>${i}: ${ataques[i] ?? 0}</div>`;
-            }
-          }
+  .mobile-overlay {
+    position: fixed; inset: 0; z-index: 1280; background: rgba(0,0,0,0.45);
+    opacity: 0; visibility: hidden; transition: opacity 0.2s;
+  }
+  .mobile-overlay.show { opacity: 1; visibility: visible; }
 
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${av.nome ?? "-"}</td>
-            <td>${av.vida ?? "-"}</td>
-            <td>${classesHTML || "-"}</td>
-            <td>${ataquesHTML || "-"}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
+  /* tabela sem bordas fortes */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+  tr:last-child td { border-bottom: none; }
 
-      // batalha infinita
-      document.getElementById("btn-batalha").addEventListener("click", async () => {
-        const nomeMonstro = document.getElementById("monstro-nome").value.trim();
-        const hpMonstroBase = Number(document.getElementById("monstro-vida").value);
-        const danoMonstroBase = Number(document.getElementById("monstro-dano").value);
+  .acessibilidade-btn {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--cor-telhado); color: var(--cor-pedra-clara);
+    border: none; border-radius: 50%; width: 56px; height: 56px; font-size: 26px;
+    cursor: pointer; z-index: 2000; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  }
 
-        // drop 1
-        const dropChance1 = Number(document.getElementById("drop1-chance").value);
-        const dropItem1 = document.getElementById("drop1-item").value.trim();
+  .painel-acessibilidade {
+    position: fixed; bottom: 90px; right: 20px; background: var(--cor-pedra);
+    border-radius: 12px; padding: 12px; display: none; flex-direction: column; gap: 10px;
+    z-index: 1999; width: 240px;
+  }
+  .painel-acessibilidade.active { display: flex; }
+  .painel-acessibilidade button {
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    background: #fff3c7;   /* fundo amarelo claro */
+    color: #000;           /* texto preto, bem legível */
+    transition: background 0.2s, transform 0.2s;
+  }
+  .painel-acessibilidade button:hover {
+    background: #e6d48f;   /* um tom mais escuro no hover */
+    transform: scale(1.03);
+  }
 
-        // drop 2
-        const dropChance2 = Number(document.getElementById("drop2-chance").value);
-        const dropItem2 = document.getElementById("drop2-item").value.trim();
+  .main { margin: 200px auto 0; max-width: 1000px; padding: 18px; }
 
-        if (!nomeMonstro || !hpMonstroBase || hpMonstroBase <= 0 || !danoMonstroBase || danoMonstroBase <= 0) {
-          alert("Preencha os campos corretamente.");
-          return;
-        }
+  .card {
+    background: rgba(245,245,220,0.85);
+    padding: 20px; border-radius: 12px;
+  }
 
-        document.getElementById("log").innerHTML = "";
-        document.getElementById("tbody-resultados").innerHTML = "";
+  footer { text-align: center; color: #fff; margin-top: 30px; }
 
-        for (const avBase of AVENTUREIROS) {
-          let av = { ...avBase, vida: avBase.vidaMax };
-          let danoCausado = 0;
-          let monstrosMortos = 0;
-          let itensMap = {}; // {item: qtd}
+  @media (max-width: 768px) {
+    header .nav { display: none; }
+    #btnMenu { display: inline-flex; }
+    header img.logo { height: 160px; max-width: 100%; object-fit: contain; }
+    .main { margin-top: 220px; padding: 16px; }
+  }
 
-          const tabelaAtaques = av.ataques || extrairTabelaAtaques(av);
+  @media (min-width: 769px) {
+    .sidebar { display: none !important; }
+    .mobile-overlay { display: none; }
+    #btnMenu { display: none; }
+    header .nav { display: flex; }
+    header img.logo { height: 160px; max-width: 100%; object-fit: contain; }
+  }
 
-          // bônus do mago
-          const bonusMago = av.classes?.mago ? Number(av.classes.mago) : 0;
+  @supports not (backdrop-filter: blur(6px)) {
+    header { background: rgba(12,12,12,0.5); }
+    .sidebar { background: rgba(12,12,12,0.5); }
+  }
+</style>
 
-          log(`<h3>${av.nome} inicia contra hordas de ${nomeMonstro}!</h3>`);
 
-          // inimigos infinitos até vida <= metade
-          while (av.vida > av.vidaMax / 2) {
-            let hp = hpMonstroBase;
-
-            log(`<b>Novo ${nomeMonstro} apareceu! (HP: ${hp})</b>`);
-
-            while (hp > 0 && av.vida > av.vidaMax / 2) {
-              const numero = String(rolarCarta());
-              let dano = tabelaAtaques && tabelaAtaques[numero] ? Number(tabelaAtaques[numero]) : 0;
-
-              // aplicar bônus do mago
-              if (dano > 0 && bonusMago > 0) {
-                dano += bonusMago;
-              }
-
-              if (dano > 0) {
-                hp -= dano;
-                danoCausado += dano;
-                log(`${av.nome} usou carta ${numero} e causou <b>${dano}</b> (bônus mago: +${bonusMago}). [HP ${nomeMonstro}: ${hp}]`);
-              } else {
-                log(`${av.nome} errou o ataque com carta ${numero}.`, "warn");
-              }
-
-              if (hp <= 0) {
-                monstrosMortos++;
-
-                // drop 1
-                if (dropItem1 && Math.random() * 100 < dropChance1) {
-                  itensMap[dropItem1] = (itensMap[dropItem1] || 0) + 1;
-                  log(`<span class="ok">${av.nome} ganhou: ${dropItem1}!</span>`);
-                }
-
-                // drop 2
-                if (dropItem2 && Math.random() * 100 < dropChance2) {
-                  itensMap[dropItem2] = (itensMap[dropItem2] || 0) + 1;
-                  log(`<span class="ok">${av.nome} ganhou: ${dropItem2}!</span>`);
-                }
-
-                break;
-              }
-
-              // ataque do monstro
-              const danoMonstro = Math.floor(Math.random() * danoMonstroBase) + 1;
-              av.vida = Math.max(0, av.vida - danoMonstro);
-              log(`${nomeMonstro} atacou ${av.nome} e causou <b>${danoMonstro}</b>. [HP ${av.nome}: ${av.vida}]`);
-            }
-          }
-
-          addResultado(av.nome, danoCausado, monstrosMortos, itensMap);
-          log(`<hr>`);
-          await new Promise(r => setTimeout(r, 500));
-        }
-      });
-    });
-  </script>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Aventureiros</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Vida</th>
-            <th>Classes</th>
-            <th>Ataques (1–10)</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-aventureiros"></tbody>
-      </table>
+
+  <header>
+
+    <div class="left">
+
+      <button id="btnMenu" aria-label="Abrir menu móvel">☰</button>
+
+      <img src="imagens/logo.png" alt="Cidade do Espantalho" class="logo">
+
     </div>
 
-    <div class="card">
-      <h2>Configurar Monstro</h2>
-      <label>Nome: <input type="text" id="monstro-nome" placeholder="Goblin"/></label>
-      <label>Vida: <input type="number" id="monstro-vida" placeholder="150"/></label>
-      <label>Dano do monstro: <input type="number" id="monstro-dano" min="1" placeholder="5"/></label>
+    <nav class="nav" aria-label="Navegação principal">
 
-      <h3>Drops</h3>
-      <label>Item 1: <input type="text" id="drop1-item" placeholder="Trigo"/></label>
-      <label>% Drop Item 1: <input type="number" id="drop1-chance" min="0" max="100" placeholder="50"/></label>
-      <label>Item 2: <input type="text" id="drop2-item" placeholder="Espada"/></label>
-      <label>% Drop Item 2: <input type="number" id="drop2-chance" min="0" max="100" placeholder="25"/></label>
+      <a href="qg.html">QG</a>
 
-      <button id="btn-batalha">Iniciar Batalhas</button>
-    </div>
+      <a href="site2.html">Casa da Moeda</a>
 
-    <div class="card">
-      <h2>Log</h2>
-      <div id="log"></div>
-    </div>
+      <a href="placar.html">Jornal</a>
 
-    <div class="card">
-      <h2>Resultados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Aventureiro</th>
-            <th>Dano Total</th>
-            <th>Monstros Mortos</th>
-            <th>Itens Ganhos</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-resultados"></tbody>
-      </table>
-    </div>
+      <a href="pvp.html">Mercadão</a>
+
+      <a href="breve.html">Produção</a>
+
+    </nav>
+
+  </header>
+
+
+  <aside id="sidebar" class="sidebar" aria-hidden="true">
+
+    <h3>Menu</h3>
+
+    <button class="btn-close" aria-label="Fechar menu">✕</button>
+
+    <a href="qg.html">QG</a>
+
+    <a href="site2.html">Casa da Moeda</a>
+
+    <a href="placar.html">Jornal</a>
+
+    <a href="pvp.html">Mercadão</a>
+
+    <a href="breve.html">Produção</a>
+
+  </aside>
+
+  <div id="mobileOverlay" class="mobile-overlay" aria-hidden="true"></div>
+
+
+  <main class="main">
+
+    <section id="atividades">
+
+      <div class="card">
+
+        <h2 style="color:white; text-align:center; margin-bottom:16px;">Tabela de Aventureiros</h2>
+
+        <table id="tabela-aventureiros">
+
+          <thead>
+
+            <tr>
+
+              <th>Nome</th>
+
+              <th>Vida</th>
+
+              <th>Cavaleiro</th>
+
+              <th>Artificer</th>
+
+              <th>Mago</th>
+
+              <th>Mercador</th>
+
+              <th>Herói</th>
+
+              <th>Total</th>
+
+              <th>Nota</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <p>&copy; 2025 Cidade do Espantalho — Todos os direitos reservados.</p>
+
+  </footer>
+
+
+  <button id="acessibilidadeBtn" class="acessibilidade-btn" aria-label="Abrir menu de acessibilidade">♿</button>
+
+  <div id="painelAcessibilidade" class="painel-acessibilidade" role="menu" aria-label="Opções de acessibilidade">
+
+    <button id="aumentarFonte">Aumentar Fonte</button>
+
+    <button id="diminuirFonte">Diminuir Fonte</button>
+
+    <button id="altoContraste">Alto Contraste</button>
+
+    <button id="resetar">Resetar</button>
+
   </div>
+
+
+  <script>
+
+    // Menu Responsivo
+
+    const btnMenu = document.getElementById('btnMenu');
+
+    const sidebar = document.getElementById('sidebar');
+
+    const overlay = document.getElementById('mobileOverlay');
+
+
+    function toggleMenu() {
+
+      const isOpen = sidebar.classList.toggle('open');
+
+      overlay.classList.toggle('show');
+
+      sidebar.setAttribute('aria-hidden', !isOpen);
+
+      if (isOpen) sidebar.querySelector('a').focus();
+
+    }
+
+
+    btnMenu.addEventListener('click', toggleMenu);
+
+    overlay.addEventListener('click', () => {
+
+      sidebar.classList.remove('open');
+
+      overlay.classList.remove('show');
+
+      sidebar.setAttribute('aria-hidden', 'true');
+
+      btnMenu.focus();
+
+    });
+
+    document.querySelectorAll('.sidebar a, .btn-close').forEach(el => {
+
+      el.addEventListener('click', () => {
+
+        sidebar.classList.remove('open');
+
+        overlay.classList.remove('show');
+
+        sidebar.setAttribute('aria-hidden', 'true');
+
+        btnMenu.focus();
+
+      });
+
+    });
+
+
+    // Painel de Acessibilidade
+
+    const btnAcess = document.getElementById("acessibilidadeBtn");
+
+    const painelAcess = document.getElementById("painelAcessibilidade");
+
+
+    btnAcess.addEventListener("click", (e) => {
+
+      e.stopPropagation();
+
+      painelAcess.classList.toggle("active");
+
+      if (painelAcess.classList.contains("active")) painelAcess.querySelector('button').focus();
+
+    });
+
+
+    document.addEventListener("click", (e) => {
+
+      if (!painelAcess.contains(e.target) && e.target !== btnAcess) painelAcess.classList.remove("active");
+
+    });
+
+
+    // Funcionalidades de Acessibilidade
+
+    let fontSize = 16;
+
+    document.getElementById("aumentarFonte").onclick = () => {
+
+      fontSize += 2;
+
+      document.body.style.fontSize = fontSize + "px";
+
+    };
+
+    document.getElementById("diminuirFonte").onclick = () => {
+
+      fontSize = Math.max(10, fontSize - 2);
+
+      document.body.style.fontSize = fontSize + "px";
+
+    };
+
+    document.getElementById("altoContraste").onclick = () => {
+
+      document.body.style.background = "#000";
+
+      document.body.style.color = "#FFD700";
+
+      document.querySelectorAll("table, th, td").forEach(el => {
+
+        el.style.background = "#000";
+
+        el.style.color = "#FFD700";
+
+        el.style.borderColor = "#FFD700";
+
+      });
+
+    };
+
+    document.getElementById("resetar").onclick = () => {
+
+      fontSize = 16;
+
+      document.body.style.fontSize = "16px";
+
+      document.body.style.background = ""; // Restore to default (image)
+
+      document.body.style.color = "";
+
+      document.querySelectorAll("table, th, td").forEach(el => {
+
+        el.style.background = "";
+
+        el.style.color = "";
+
+        el.style.borderColor = "";
+
+      });
+
+    };
+
+  </script>
+
+
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyBmR7MTbn5IAeMZFYrccZ-gRrWwfst0yqY",
+
+      authDomain: "cidade-do-espantalho.firebaseapp.com",
+
+      databaseURL: "https://cidade-do-espantalho-default-rtdb.firebaseio.com",
+
+      projectId: "cidade-do-espantalho",
+
+      storageBucket: "cidade-do-espantalho.firebasestorage.app",
+
+      messagingSenderId: "716072345880",
+
+      appId: "1:716072345880:web:549f953a1068aa5885be6d",
+
+      measurementId: "G-1381MZZR9P"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+
+
+    async function carregarAventureiros() {
+
+      const snapshot = await get(ref(db, "aventureiros"));
+
+      if (snapshot.exists()) {
+
+        const dados = snapshot.val();
+
+        const tabela = document.getElementById("tabela-aventureiros").getElementsByTagName("tbody")[0];
+
+
+        const lista = Object.values(dados).map(data => {
+
+          const cavaleiro = data.classes?.cavaleiro || 0;
+
+          const artificer = data.classes?.artificer || 0;
+
+          const mago = data.classes?.mago || 0;
+
+          const heroi = data.classes?.heroi || 0;
+
+          const mercador = data.classes?.mercador || 0;
+
+          const total = cavaleiro + artificer + mago + heroi + mercador;
+
+
+          let nota = total * 0.25;
+
+          if (cavaleiro >= 3 && artificer >= 3 && mago >= 3 && mercador >= 3 && heroi < 3) {
+
+            nota += 1;
+
+          }
+
+
+          return { ...data, cavaleiro, artificer, mago, heroi, mercador, total, nota };
+
+        });
+
+
+        lista.sort((a, b) => b.total - a.total);
+
+
+        lista.forEach((data) => {
+
+          const row = tabela.insertRow();
+
+          row.innerHTML = `
+
+            <td>${data.nome}</td>
+
+            <td>${data.vida || 0}</td>
+
+            <td>${data.cavaleiro}</td>
+
+            <td>${data.artificer}</td>
+
+            <td>${data.mago}</td>
+
+            <td>${data.mercador}</td>
+
+            <td>${data.heroi}</td>
+
+            <td><b>${data.total}</b></td>
+
+            <td><b>${data.nota.toFixed(2)}</b></td>
+
+          `;
+
+        });
+
+      }
+
+    }
+
+
+    window.onload = carregarAventureiros;
+
+  </script>
+
 </body>
+
 </html>
