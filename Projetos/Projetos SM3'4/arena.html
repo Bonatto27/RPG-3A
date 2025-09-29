@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arena (Onde Lendas se Encontram)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Cinzel', serif;
+      background: linear-gradient(135deg, #f4e4bc 0%, #e8d8a6 100%);
+      margin: 0;
+      padding: 20px;
+      color: #2c1b07;
+      line-height: 1.6;
+    }
+    .header {
+      background: linear-gradient(90deg, #8b5a2b 0%, #d4a017 100%);
+      padding: 15px;
+      border-bottom: 3px solid #4a2c0d;
+      text-align: center;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 2.5em;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin: 0;
+      padding: 10px;
+    }
+    .header .logo {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .nav-container { margin: 10px 0; text-align:center; }
+    .nav-button {
+      background: linear-gradient(135deg, #8b5a2b 0%, #a06e3c 100%);
+      color: white;
+      font-size: 1.1em;
+      font-weight: bold;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: 2px solid #d4a017;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+      margin: 0 10px;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .nav-button:hover {
+      background: linear-gradient(135deg, #d4a017 0%, #c28f1e 100%);
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .section {
+      background: linear-gradient(135deg, #e6d5a7 0%, #f0e6d0 100%);
+      border: 3px solid #8b5a2b;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 95%;
+      max-width: 1400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .section h2 {
+      font-size: 1.5em;
+      color: #4a2c0d;
+      margin-top: 0;
+      border-bottom: 2px solid #8b5a2b;
+      padding-bottom: 5px;
+    }
+
+    /* Estilo do chaveamento */
+    .bracket {
+      display: flex;
+      align-items: stretch;
+      overflow-x: auto;
+      padding: 10px;
+      position: relative;
+    }
+    .round {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 0 20px;
+      position: relative;
+    }
+    .match {
+      background: #fff7e0;
+      border: 2px solid #8b5a2b;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px 0;
+      text-align: center;
+      min-width: 80px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .player {
+      background: #f0e6d0;
+      border: 1px solid #8b5a2b;
+      border-radius: 3px;
+      padding: 5px;
+      margin: 3px 0;
+    }
+
+    /* Seta indicando para qual luta vai */
+    .arrow {
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #8b5a2b;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo"></div>
+    <h1>Arena (Onde Lendas se Encontram)</h1>
+  </div>
+
+  <div class="nav-container">
+    <a href="catalogo.html" class="nav-button">Catálogo</a>
+    <a href="placar.html" class="nav-button">Placar</a>
+  </div>
+
+  <!-- CHAVEAMENTO DOS VENCEDORES -->
+  <div class="section">
+    <h2>Chaveamento dos Vencedores</h2>
+    <div class="bracket">
+      <!-- Rodada 1 -->
+      <div class="round">
+        <div class="match"><div class="player">1</div><div class="player">2</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">3</div><div class="player">4</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">5</div><div class="player">6</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">7</div><div class="player">8</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">9</div><div class="player">10</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">11</div><div class="player">12</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">13</div><div class="player">14</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">15</div><div class="player">16</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">17</div><div class="player">18</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">19</div><div class="player">20</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">21</div><div class="player">22</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">23</div><div class="player">24</div><span class="arrow">→</span></div>
+      </div>
+
+      <!-- Rodada 2 -->
+      <div class="round">
+        <div class="match"><div class="player">1</div><div class="player">4</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">5</div><div class="player">8</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">10</div><div class="player">11</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">14</div><div class="player">15</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">17</div><div class="player">19</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">22</div><div class="player">24</div><span class="arrow">→</span></div>
+      </div>
+
+      <!-- Rodada 3: Quartas -->
+      <div class="round">
+        <div class="match"><div class="player">1</div><div class="player">5</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">10</div><div class="player">15</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">17</div><div class="player">24</div><span class="arrow">→</span></div>
+      </div>
+
+      <!-- Rodada 4: Semifinais -->
+      <div class="round">
+        <div class="match"><div class="player">7</div><div class="player">5</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">15</div><div class="player">24</div><span class="arrow">→</span></div>
+      </div>
+
+      <!-- Final -->
+      <div class="round">
+        <div class="match"><div class="player">5 (Campeão)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAVEAMENTO DOS PERDEDORES -->
+  <div class="section">
+    <h2>Chaveamento dos Perdedores</h2>
+    <div class="bracket">
+      <div class="round">
+        <div class="match"><div class="player">2</div><div class="player">3</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">6</div><div class="player">7</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">9</div><div class="player">12</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">13</div><div class="player">16</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">18</div><div class="player">20</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">21</div><div class="player">23</div><span class="arrow">→</span></div>
+      </div>
+
+      <div class="round">
+        <div class="match"><div class="player">3</div><div class="player">6</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">9</div><div class="player">16</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">18</div><div class="player">23</div><span class="arrow">→</span></div>
+      </div>
+
+      <div class="round">
+        <div class="match"><div class="player">3</div><div class="player">9</div><span class="arrow">→</span></div>
+        <div class="match"><div class="player">16</div><div class="player">23</div><span class="arrow">→</span></div>
+      </div>
+
+      <div class="round">
+        <div class="match"><div class="player">3</div><div class="player">23</div><span class="arrow">→</span></div>
+      </div>
+
+      <div class="round">
+        <div class="match"><div class="player">23 (Vencedor)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESTANTE DO SITE -->
+  <div class="section">
+    <h2>Visitantes para Batalha</h2>
+    <p>Lorde Valquíria</p>
+  </div>
+
+  <div class="section">
+    <h2>Mural de Recados (Comunidade)</h2>
+    <textarea placeholder="Escreva seu recado" rows="4"></textarea>
+    <button class="submit-button" onclick="alert('Recado enviado!')">Enviar</button>
+  </div>
+
+  <div class="section">
+    <h2>História da Arena</h2>
+    <p>A Arena foi fundada em 1080 por Sir Cedric, um lendário cavaleiro, como um local de honra e glória para os guerreiros de Eldoria.</p>
+  </div>
+
+  <div class="section">
+    <h2>Localização</h2>
+    <p>Eldoria - Detalhes a serem preenchidos.</p>
+  </div>
+
+  <div class="section">
+    <h2>Formulário de Inscrição</h2>
+    <div class="form-group">
+      <label for="warrior-name">Nome do Guerreiro</label>
+      <input type="text" id="warrior-name" placeholder="Ex: Sir Alaric" required>
+    </div>
+    <div class="form-group">
+      <label for="warrior-age">Idade</label>
+      <input type="number" id="warrior-age" placeholder="Ex: 25"
