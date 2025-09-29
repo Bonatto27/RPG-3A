@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="medieval">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vale do Espantalho — Relíquias</title>
+  <meta name="description" content="Galeria de relíquias do Vale do Espantalho com descrições e funcionamento." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ======= CONFIGURAÇÕES DE TEMA ======= */
+    :root {
+      --radius: 14px;
+      --shadow: 0 10px 25px rgba(0,0,0,.1);
+      --max-w: 1100px;
+      /* Cores padrão (misto) */
+      --bg: #0f1221; /* fundo escuro azulado */
+      --bg-soft: #171a2e;
+      --card: #1d2140;
+      --text: #e8ecff;
+      --muted: #b9c0ff;
+      --accent: #8b5cf6; /* roxo "mágico" */
+      --accent-2: #22d3ee; /* ciano */
+      --ok: #22c55e;
+      --warn: #f59e0b;
+    }
+    [data-theme="medieval"] {
+      --bg: #0c0a09;
+      --bg-soft: #141210;
+      --card: #1c1917;
+      --text: #fde68a;
+      --muted: #fcd34d;
+      --accent: #b45309; /* cobre */
+      --accent-2: #84cc16;
+    }
+    [data-theme="moderno"] {
+      --bg: #0b1020;
+      --bg-soft: #101630;
+      --card: #111936;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --accent: #6366f1; /* índigo */
+      --accent-2: #06b6d4;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      height: 100%;
+      min-height: 100vh;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Lora', serif;
+      background: radial-gradient(circle at center, rgba(139,92,246,.25) 0%, transparent 70%), radial-gradient(circle at 80% 20%, rgba(34,211,238,.18) 0%, transparent 70%), var(--bg);
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      color: var(--text);
+      padding: 20px;
+    }
+    a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      width: min(100%, var(--max-w));
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 1rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b0e1a;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: rgba(255,255,255,.15);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .7rem 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .brand h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      margin: 0;
+      letter-spacing: .4px;
+    }
+    .menu {
+      display: flex;
+      gap: .6rem;
+      align-items: center;
+    }
+    .menu a {
+      padding: .5rem .8rem;
+      border-radius: 999px;
+      font-family: 'Lora', serif;
+    }
+    .menu a:hover, .menu a:focus {
+      background: rgba(255,255,255,.08);
+      outline: none;
+    }
+    .theme-switch {
+      display: flex;
+      gap: .4rem;
+      align-items: center;
+    }
+    .theme-switch select {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      padding: .4rem .8rem;
+    }
+    .hamb {
+      display: none;
+    }
+    @media (max-width: 800px) {
+      .menu {
+        display: none;
+        position: absolute;
+        right: 1rem;
+        top: 64px;
+        background: var(--bg-soft);
+        padding: .5rem;
+        border-radius: var(--radius);
+        width: calc(100% - 2rem);
+        box-shadow: var(--shadow);
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .menu.open {
+        display: flex;
+      }
+      .hamb {
+        display: inline-flex;
+      }
+    }
+    /* ======= TÍTULO ======= */
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.3em;
+      color: var(--accent);
+      text-align: center;
+      margin: 30px 0 20px;
+    }
+    /* ======= TABELA RELÍQUIAS ======= */
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 980px;
+      width: 100%;
+      text-align: left;
+      animation: fadeIn 0.5s ease-in;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid var(--muted);
+      text-align: left;
+      vertical-align: middle;
+      transition: all 0.3s ease;
+    }
+    th {
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Cinzel', serif;
+      text-align: center;
+    }
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    tr:hover {
+      background: var(--accent-2) !important;
+      color: var(--bg) !important;
+      transform: scale(1.01);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Imagem do item (pixel art friendly) */
+    .item-image {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto;
+    }
+    td.description {
+      padding-left: 10px;
+    }
+    td.description strong {
+      font-family: 'Cinzel', serif;
+      color: var(--accent-2);
+    }
+    .functionality {
+      margin-top: 10px;
+      font-style: normal;
+      font-size: 0.95em;
+      line-height: 1.6;
+      display: none; /* escondido por padrão */
+    }
+    .functionality.active {
+      display: block;
+    }
+    .functionality strong {
+      font-family: 'Cinzel', serif;
+      color: var(--accent);
+    }
+    .toggle-button {
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Cinzel', serif;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: opacity 0.3s ease;
+      margin-top: 8px;
+    }
+    .toggle-button:hover {
+      opacity: .9;
+    }
+    /* Responsivo */
+    @media (max-width: 700px) {
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+      th, td {
+        padding: 10px;
+        font-size: 0.95em;
+      }
+      .toggle-button {
+        padding: 6px 12px;
+        font-size: 0.85em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cabeçalho compartilhado -->
+  <header>
+    <div class="container nav" role="navigation" aria-label="Navegação principal">
+      <div class="brand">
+        <img src="imagens/brasao.png" alt="Brasão de Vale do Espantalho" />
+        <h1>Vale do Espantalho</h1>
+      </div>
+      <nav>
+        <button class="btn btn-ghost hamb" aria-expanded="false" aria-controls="menu" id="hambBtn">☰ Menu</button>
+        <div id="menu" class="menu" role="menubar">
+          <a role="menuitem" href="home.html">Home</a>
+          <a role="menuitem" href="placar.html">Placar</a>
+          <a role="menuitem" href="pvp.html">PvP</a>
+          <a role="menuitem" href="breve.html">Em breve...</a>
+        </div>
+      </nav>
+      <div class="theme-switch" aria-label="Seletor de tema">
+        <label for="themeSel" class="muted" style="font-size:.9rem">Tema:</label>
+        <select id="themeSel" aria-label="Escolha um tema">
+          <option value="medieval">Medieval Encantado</option>
+          <option value="moderno">Moderno Mágico</option>
+          <option value="misto">Misto</option>
+        </select>
+      </div>
+    </div>
+  </header>
+  <h1>Relíquias Perdidas</h1>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:120px; text-align:center;">Imagem</th>
+        <th>Descrição</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Adagas Gêmeas -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/adaga_gemias.png" alt="Adagas Gêmeas" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Adagas Gêmeas</strong><br>
+            Um par de lâminas encantadas, forjadas no fogo dracônico e temperadas nas águas da lua cheia. Cada adaga possui uma gema que pulsa com energia mágica...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Ao revelar cartas <b>3, 5 ou 7</b>, causa dano.<br>
+            - Cada acerto causa 5 de dano fixo.<br>
+            - Próxima carta ímpar: dano <b>duplicado</b>.<br>
+            - Três ímpares seguidos: <b>triplo dano</b>.
+          </div>
+        </td>
+      </tr>
+      <!-- Arco Solar -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/arco_solar.png" alt="Arco Solar" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Arco Solar</strong><br>
+            Forjado a partir de fios de luz pura, o Arco Solar brilha com a energia do próprio sol. Sua corda ressoa como o som da aurora, e suas flechas de energia são capazes de atravessar até as sombras mais densas...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Quando uma carta de valor <b>2, 3, 4 ou 5</b> é revelada, o Arco Solar dispara uma flecha radiante.<br>
+            - Cada acerto causa 6 de dano fixo.<br>
+            - Outros valores de carta não ativam o arco.
+          </div>
+        </td>
+      </tr>
+      <!-- Sopro Azul do Dragão -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/sopro_azul_do_dragao.png" alt="Sopro Azul do Dragão" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Sopro Azul do Dragão</strong><br>
+            Um coração cristalino, envolto por asas flamejantes, que pulsa com o poder ancestral dos dragões azuis. Dizem que ele guarda a essência do sopro gélido que os dragões exalam contra seus inimigos...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Este item só pode ser ativado quando o inimigo revelar uma carta <b>J</b>.<br>
+            - Ao ser ativado, o Sopro Azul do Dragão paralisa o inimigo por 2 turnos, impedindo-o de jogar cartas nesse período.<br>
+            - Durante a paralisia, o inimigo não pode atacar nem defender.
+          </div>
+        </td>
+      </tr>
+      <!-- Adaga Sombria -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/adaga_sombria.png" alt="Adaga Sombria" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Adaga Sombria</strong><br>
+            Uma lâmina forjada nas trevas do submundo, envolta em energia obscura que drena a vitalidade de quem for atingido...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Se o jogador revelar uma carta <b>A, 3 ou 5</b>, a adaga desfere um golpe rápido que causa 6 de dano direto.<br>
+            - Se o jogador revelar uma carta <b>7 ou 9</b>, além do golpe que causa 6 de dano, o inimigo é afetado por sangramento:<br>
+            - Duração: 3 turnos.<br>
+            - Efeito: perde 2 de vida por turno enquanto durar o sangramento.
+          </div>
+        </td>
+      </tr>
+      <!-- Suspiro da Morte -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/suspiro_da_morte.png" alt="Suspiro da Morte" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Suspiro da Morte</strong><br>
+            Uma foice forjada nas profundezas do Submundo, envolta por energia roxa espectral que ecoa os lamentos das almas perdidas...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Ativa ao revelar uma carta <b>10</b>.<br>
+            - Garante imunidade ao próximo ataque inimigo.<br>
+            - Após a ativação, a próxima carta revelada ganha +2 de dano se for um ataque.
+          </div>
+        </td>
+      </tr>
+      <!-- Lança do Crepúsculo -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/lanca_crepusculo.png" alt="Lança do Crepúsculo" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Lança do Crepúsculo</strong><br>
+            Forjada na fronteira entre a luz e a escuridão, esta lança brilha com um fulgor púrpura que confunde os inimigos...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Ativa ao revelar cartas <b>4 ou 9</b>.<br>
+            - Causa 8 de dano fixo.<br>
+            - Ignora qualquer defesa do inimigo na primeira ativação por turno.
+          </div>
+        </td>
+      </tr>
+      <!-- Olho que Tudo Vê -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/olho_que_tudo_ve.png" alt="Olho que Tudo Vê" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Olho que Tudo Vê</strong><br>
+            Um artefato arcano que brilha em tons de fogo etéreo. Ela não necessita de cartas ou rituais para ser ativada...
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Pode ser usado antes da batalha para identificar pontos fracos e ganhar vantagens no combate.
+          </div>
+        </td>
+      </tr>
+      <!-- Espada Sangrenta -->
+      <tr>
+        <td data-label="Imagem">
+          <img src="imagens/sangrentra_rpg.png" alt="Espada Sangrenta" class="item-image">
+        </td>
+        <td data-label="Descrição" class="description">
+          <div>
+            <strong>Espada Sangrenta</strong><br>
+            Forjada em antigos rituais de sangue, essa lâmina maldita tem sede de vida. Cada golpe certeiro não apenas corta o inimigo, mas drena sua energia, devolvendo parte dela ao guerreiro que a empunha. Temida por muitos e desejada por poucos, a Espada Sangrenta não é apenas aço… é um fragmento vivo de guerra, sempre faminta por mais.
+          </div>
+          <button class="toggle-button">Mostrar Funcionamento</button>
+          <div class="functionality">
+            <strong>Funcionamento:</strong><br>
+            - Ativa ao revelar cartas <b>1, 5, 7 ou 10</b>.<br>
+            - Causa 8 de dano ao inimigo.<br>
+            - Concede 4 de vida ao portador por acerto.
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <script>
+    // ======= TROCA DE TEMA =======
+    const themeSel = document.getElementById('themeSel');
+    themeSel.addEventListener('change', e => {
+      document.documentElement.setAttribute('data-theme', e.target.value);
+    });
+
+    // ======= MENU HAMBÚRGUER =======
+    const hambBtn = document.getElementById('hambBtn');
+    const menu = document.getElementById('menu');
+    if (hambBtn && menu) {
+      hambBtn.addEventListener('click', () => {
+        const isOpen = menu.classList.toggle('open');
+        hambBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+
+    // ======= TOGGLE DOS ITENS =======
+    document.querySelectorAll('.toggle-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const functionality = button.nextElementSibling;
+        functionality.classList.toggle('active');
+        button.textContent = functionality.classList.contains('active') ? 'Esconder Funcionamento' : 'Mostrar Funcionamento';
+      });
+    });
+  </script>
+</body>
+</html>
